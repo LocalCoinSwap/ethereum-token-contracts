@@ -1,0 +1,26 @@
+# Naughty things
+.env
+secrets.json
+deployed_contracts.json
+
+artifacts
+cache
+.DS_S*
+
+# Contracts
+build
+build/*
+.openzeppelin/.session
+.openzeppelin/d*
+.openzeppelin/.lock
+
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+node_modules
+node_modules/*
+
+# Dependency directories
+node_modules/
