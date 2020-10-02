@@ -1,4 +1,6 @@
+usePlugin("@nomiclabs/buidler-ethers");
 usePlugin("@nomiclabs/buidler-truffle5");
+
 
 module.exports = {
   networks: {
