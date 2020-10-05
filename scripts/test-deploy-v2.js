@@ -1,7 +1,7 @@
 
 async function main() {
   const accounts = await ethers.getSigners();
-
+  console.log("Account", accounts[0]._address);
   const V2 = await ethers.getContractFactory("LocalCoinSwapV2Escrow");
   const v2 = await V2.deploy(accounts[0]._address);
   

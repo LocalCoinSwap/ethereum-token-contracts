@@ -25,3 +25,10 @@ The next step is to run tests for all of the compiled smart contracts:
 ```
 npx buidler test
 ```
+
+## Deployment
+
+Set private key and infura API in .env, then:
+```
+npx buidler --network mainnet deploy --write true
+```

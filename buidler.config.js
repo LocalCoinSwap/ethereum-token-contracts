@@ -1,5 +1,6 @@
 require('dotenv').config();
 
+usePlugin("buidler-deploy");
 usePlugin("@nomiclabs/buidler-ethers");
 usePlugin("@nomiclabs/buidler-truffle5");
 
@@ -21,6 +22,14 @@ module.exports = {
     optimizer: {
       enabled: true,
       runs: 200
+    }
+  },
+  namedAccounts: {
+    deployer: {
+        default: 0,
+    },
+    feeCollector:{
+        default: 1,
     }
   },
   paths: {
