@@ -48,9 +48,9 @@ contract LocalCoinSwapV2Escrow {
     +     Instructions     +
     ***********************/
 
+    uint8 constant RELEASE_ESCROW = 0x01;
     uint8 constant BUYER_CANCELS = 0x02;
-    uint8 constant RELEASE_ESCROW = 0x05;
-    uint8 constant RESOLVE_DISPUTE = 0x06;
+    uint8 constant RESOLVE_DISPUTE = 0x03;
 
     /***********************
     +       Events        +

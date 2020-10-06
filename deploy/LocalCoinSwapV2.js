@@ -2,7 +2,7 @@ console.log("LocalCoinSwapV2 deploy task");
 
 const name = "LocalCoinSwapV2Escrow";
 
-module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
+module.exports = async ({ getNamedAccounts, deployments }) => {
   const accounts = await ethers.getSigners();
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
@@ -11,7 +11,6 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   const deployResult = await deploy(name, {
     from: deployer,
-    // gas: 4000000,
     args: [accounts[0]._address],
     logs: true,
   });
