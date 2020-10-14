@@ -32,3 +32,10 @@ Set private key and infura API in .env, then:
 ```
 npx buidler --network mainnet deploy --write true
 ```
+
+## Verification:
+
+Set Etherscan key in `.env` and run:
+```
+npx buidler verify --network mainnet DEPLOYED_CONTRACT_ADDRESS
+```

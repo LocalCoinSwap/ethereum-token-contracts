@@ -3,6 +3,7 @@ require('dotenv').config();
 usePlugin("buidler-deploy");
 usePlugin("@nomiclabs/buidler-ethers");
 usePlugin("@nomiclabs/buidler-truffle5");
+usePlugin("@nomiclabs/buidler-etherscan");
 
 
 module.exports = {
@@ -16,6 +17,9 @@ module.exports = {
       url: process.env.WEB3_API,
       accounts: [process.env.PRIV]
     },
+  },
+  etherscan: {
+    apiKey: process.env.ETHERSCAN_API_KEY
   },
   solc: {
     version: "0.5.17",
