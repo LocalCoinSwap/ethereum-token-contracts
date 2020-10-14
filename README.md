@@ -1,5 +1,5 @@
-# escrow-contract
 LocalCoinSwap non-custodial smart contracts for Ethereum & Tokens.
+
 
 ## Installation
 
