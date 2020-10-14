@@ -49,6 +49,7 @@ contract("LocalCoinSwapV2", async accounts => {
     fiatOnRamp = await V2Escrow.new(accounts[0]);
   });
 
+  let average = (array) => array.reduce((a, b) => a + b) / array.length;
 
   async function initialiseTrade(_tradeID, crypto) {
     const accounts = await web3.eth.getAccounts();
@@ -109,20 +110,21 @@ contract("LocalCoinSwapV2", async accounts => {
   });
 
   it("Release", async () => {
+    let gasUsed = [];
     for (const crypto of cryptos) {
       const _tradeID = crypto[0];
       await initialiseTrade(_tradeID, crypto[1]);
 
       const relayedSenderParams = abi.soliditySHA3(
         ["bytes16", "uint8", "uint128"],
-        [_tradeID, 0x05, MAX_UINT128]);
+        [_tradeID, 0x01, MAX_UINT128]);
       const prefixedHash = utils.hashPersonalMessage(relayedSenderParams);
       const signed = utils.ecsign(prefixedHash, utils.toBuffer(_sellerPriv));
       const _r = utils.bufferToHex(signed.r);
       const _s = utils.bufferToHex(signed.s);
       const _v = signed.v;
 
-      await fiatOnRamp.relay(
+      const tx = await fiatOnRamp.relay(
         _tradeID,
         _seller,
         _buyer,
@@ -132,16 +134,20 @@ contract("LocalCoinSwapV2", async accounts => {
         _v,
         _r,
         _s,
-        0x05,
+        0x01,
         0);
+      gasUsed.push(tx.receipt.gasUsed)
+      console.log(`Gas used: ${crypto[2]} - release`, tx.receipt.gasUsed);
 
       const _totalFees = (_value * _fee / 10000);
       const buyerBalance = await crypto[1].balanceOf(_buyer);
       assert.equal(buyerBalance, _value - _totalFees);
     }
+    console.log(`Average gas: ${average(gasUsed)}`)
   });
 
   it("Buyer cancel", async () => {
+    let gasUsed = [];
     for (const crypto of cryptos) {
       const _tradeID = crypto[0];
       await initialiseTrade(_tradeID, crypto[1]);
@@ -161,7 +167,7 @@ contract("LocalCoinSwapV2", async accounts => {
       let expectedSellerBalance = new bigNumber(await crypto[1].balanceOf(_seller));
       expectedSellerBalance = expectedSellerBalance.plus(_value);
 
-      await fiatOnRamp.relay(
+      const tx = await fiatOnRamp.relay(
         _tradeID,
         _seller,
         _buyer,
@@ -174,15 +180,19 @@ contract("LocalCoinSwapV2", async accounts => {
         0x02,
         0,
       );
+      gasUsed.push(tx.receipt.gasUsed)
+      console.log(`Gas used: ${crypto[2]} - buyer cancel`, tx.receipt.gasUsed);
 
       const newBuyerBalance = await crypto[1].balanceOf(_buyer);
       assert.equal(newBuyerBalance.toString(), buyerBalance.toString());
       const newSellerBalance = new bigNumber(await crypto[1].balanceOf(_seller));
       assert.equal(newSellerBalance.toString(), expectedSellerBalance.toString());
     }
+    console.log(`Average gas: ${average(gasUsed)}`)
   });
 
   it("Dispute seller wins", async () => {
+    let gasUsed = [];
     for (const crypto of cryptos) {      
       const _tradeID = crypto[0];
       await initialiseTrade(_tradeID, crypto[1]);
@@ -191,7 +201,7 @@ contract("LocalCoinSwapV2", async accounts => {
 
       const relayedSenderParams = abi.soliditySHA3(
         ["bytes16", "uint8"],
-        [_tradeID, 0x06]);
+        [_tradeID, 0x03]);
       const prefixedHash = utils.hashPersonalMessage(relayedSenderParams);
       const signed = utils.ecsign(prefixedHash, utils.toBuffer(_buyerPriv));
       const _r = utils.bufferToHex(signed.r);
@@ -204,7 +214,7 @@ contract("LocalCoinSwapV2", async accounts => {
       let expectedSellerBalance = new bigNumber(await crypto[1].balanceOf(_seller));
       expectedSellerBalance = expectedSellerBalance.plus(_value);
 
-      await fiatOnRamp.resolveDispute(
+      const tx = await fiatOnRamp.resolveDispute(
         _tradeID,
         _seller,
         _buyer,
@@ -215,15 +225,19 @@ contract("LocalCoinSwapV2", async accounts => {
         _s,
         _buyerPercent
       );
+      gasUsed.push(tx.receipt.gasUsed)
+      console.log(`Gas used: ${crypto[2]} - dispute seller wins`, tx.receipt.gasUsed);
 
       const newBuyerBalance = await crypto[1].balanceOf(_buyer);
       assert.equal(newBuyerBalance.toString(), buyerBalance.toString());
       const newSellerBalance = new bigNumber(await crypto[1].balanceOf(_seller));
       assert.equal(newSellerBalance.toString(), expectedSellerBalance.toString());
     }
+    console.log(`Average gas: ${average(gasUsed)}`)
   });
 
   it("Dispute buyer wins", async () => {
+    let gasUsed = [];
     for (const crypto of cryptos) {      
       const _tradeID = crypto[0];
       await initialiseTrade(_tradeID, crypto[1]);
@@ -232,7 +246,7 @@ contract("LocalCoinSwapV2", async accounts => {
 
       const relayedSenderParams = abi.soliditySHA3(
         ["bytes16", "uint8"],
-        [_tradeID, 0x06]);
+        [_tradeID, 0x03]);
       const prefixedHash = utils.hashPersonalMessage(relayedSenderParams);
       const signed = utils.ecsign(prefixedHash, utils.toBuffer(_buyerPriv));
       const _r = utils.bufferToHex(signed.r);
@@ -246,7 +260,7 @@ contract("LocalCoinSwapV2", async accounts => {
       const _totalFees = (_value * _fee / 10000);
       buyerBalance = buyerBalance.plus(_value).minus(_totalFees);
 
-      await fiatOnRamp.resolveDispute(
+      const tx = await fiatOnRamp.resolveDispute(
         _tradeID,
         _seller,
         _buyer,
@@ -257,11 +271,14 @@ contract("LocalCoinSwapV2", async accounts => {
         _s,
         _buyerPercent
       );
+      gasUsed.push(tx.receipt.gasUsed)
+      console.log(`Gas used: ${crypto[2]} - dispute buyer wins`, tx.receipt.gasUsed);
 
       const newBuyerBalance = await crypto[1].balanceOf(_buyer);
       assert.equal(newBuyerBalance.toString(), buyerBalance.toString());
       const newSellerBalance = new bigNumber(await crypto[1].balanceOf(_seller));
       assert.equal(newSellerBalance.toString(), sellerBalance.toString());
     }
+    console.log(`Average gas: ${average(gasUsed)}`)
   });
 });

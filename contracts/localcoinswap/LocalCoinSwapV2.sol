@@ -151,7 +151,7 @@ contract LocalCoinSwapV2Escrow {
         return doRelease(_tradeID, _seller, _buyer, _value, _fee, 0);
     }
 
-    uint16 constant GAS_doRelease = 46588;
+    uint16 constant GAS_doRelease = 3658;
     function doRelease(
         bytes16 _tradeID,
         address payable _seller,
@@ -174,7 +174,7 @@ contract LocalCoinSwapV2Escrow {
         return true;
     }
 
-    uint16 constant GAS_doResolveDispute = 36100;
+    uint16 constant GAS_doResolveDispute = 14060;
     function resolveDispute(
         bytes16 _tradeID,
         address payable _seller,
@@ -230,7 +230,7 @@ contract LocalCoinSwapV2Escrow {
         escrows[_tradeHash].totalGasFeesSpentByRelayer += _gas * uint128(tx.gasprice);
     }
 
-    uint16 constant GAS_doBuyerCancel = 46255;
+    uint16 constant GAS_doBuyerCancel = 2367;
     function doBuyerCancel(
         bytes16 _tradeID,
         address payable _seller,
@@ -260,7 +260,7 @@ contract LocalCoinSwapV2Escrow {
     +        Relays        +
     ***********************/
 
-    uint16 constant GAS_batchRelayBaseCost = 28500;
+    uint16 constant GAS_batchRelayBaseCost = 30000;
     function batchRelay(
         bytes16[] memory _tradeID,
         address payable[] memory _seller,
