@@ -37,5 +37,5 @@ npx buidler --network mainnet deploy --write true
 
 Set Etherscan key in `.env` and run:
 ```
-npx buidler verify --network mainnet DEPLOYED_CONTRACT_ADDRESS
+npx buidler verify --network mainnet DEPLOYED_CONTRACT_ADDRESS OWNER_ADDRESS
 ```
