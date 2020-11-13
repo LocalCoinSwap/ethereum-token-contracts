@@ -17,7 +17,7 @@ contract("LocalCoinSwapV2", async accounts => {
   const _sellerPriv = '0xd49743deccbccc5dc7baa8e69e5be03298da8688a15dd202e20f15d5e0e9a9fb';
   const _buyer = '0xe5904695748fe4a84b40b3fc79de2277660bd1d3';
   const _buyerPriv = '0x23c601ae397441f3ef6f1075dcb0031ff17fb079837beadaf3c84d96c6f3e569';
-  const _relayPriv = '0xc5e8f61d1ab959b397eecc0a37a6517b8e67a0e7cf1f4bce5591f3ed80199122';
+  const _relayPriv = '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80';
   const _value = 1010000;
   const _fee = 100;
 

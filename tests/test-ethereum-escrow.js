@@ -33,7 +33,7 @@ contract("Test Ethereum Escrow Contract", async accounts => {
     const prefixed_hash = utils.hashPersonalMessage(instruction_hash_bytes);
     const signed = utils.ecsign(
       prefixed_hash,
-      utils.toBuffer("0xc5e8f61d1ab959b397eecc0a37a6517b8e67a0e7cf1f4bce5591f3ed80199122")
+      utils.toBuffer("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80")
     );
     const _r = utils.bufferToHex(signed.r);
     const _s = utils.bufferToHex(signed.s);
