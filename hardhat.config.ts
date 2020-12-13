@@ -1,11 +1,11 @@
 require('dotenv').config();
-require("@nomiclabs/hardhat-ethers");
-require("@nomiclabs/hardhat-truffle5");
-require("@nomiclabs/hardhat-etherscan");
-require("hardhat-deploy");
+import "@nomiclabs/hardhat-ethers";
+import "@nomiclabs/hardhat-truffle5";
+import "@nomiclabs/hardhat-etherscan";
+import "hardhat-deploy";
 
 
-module.exports = {
+export default {
   defaultNetwork: "hardhat",
   networks: {
     hardhat: {
