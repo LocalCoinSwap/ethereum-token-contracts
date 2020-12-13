@@ -1,16 +1,26 @@
-const bigNumber = require('bignumber.js')
-const abi = require('ethereumjs-abi');
-const utils = require('ethereumjs-util');
-
+import { assert } from "chai";
+import { describe } from "mocha";
+import bigNumber from 'bignumber.js';
+import { soliditySHA3 } from 'ethereumjs-abi';
+import {
+  bufferToHex,
+  hashPersonalMessage,
+  ecsign,
+  toBuffer
+} from 'ethereumjs-util';
+import { ethers, artifacts, web3 } from "hardhat";
 
 const Dai = artifacts.require("Dai");
 const Usdc = artifacts.require("FiatTokenV2");
 const Tether = artifacts.require("TetherToken");
 const ERC20 = artifacts.require("ERC20Token");
-
 const V2Escrow = artifacts.require("LocalCoinSwapV2Escrow");
 
-contract("LocalCoinSwapV2", async accounts => {
+
+describe("LocalCoinSwapV2", async () => {
+  const accounts = await ethers.getSigners();
+  const signer = accounts[0];
+
   const MAX_UINT128 = "0xffffffffffffffffffffffffffffffff";
 
   const _seller = '0xead9c93b79ae7c1591b1fb5323bd777e86e150d4';
@@ -55,21 +65,21 @@ contract("LocalCoinSwapV2", async accounts => {
     const accounts = await web3.eth.getAccounts();
 
     // Calculate VRS of invitation to escrow by relayer
-    const tradeHashBytes = abi.soliditySHA3(
+    const tradeHashBytes = soliditySHA3(
       ['bytes16', 'address', 'address', 'uint256', 'uint16'],
       [_tradeID, _seller, _buyer, _value, _fee]);
-    const tradeHashHex = utils.bufferToHex(tradeHashBytes);
+    const tradeHashHex = bufferToHex(tradeHashBytes);
     
-    const instructionHashBytes = abi.soliditySHA3(
+    const instructionHashBytes = soliditySHA3(
       ['bytes32',],
       [tradeHashHex,])
-    const prefixedHash = utils.hashPersonalMessage(instructionHashBytes);
-    const signed = utils.ecsign(
+    const prefixedHash = hashPersonalMessage(instructionHashBytes);
+    const signed = ecsign(
       prefixedHash,
-      utils.toBuffer(_relayPriv)
+      toBuffer(_relayPriv)
     );
-    const _r = utils.bufferToHex(signed.r);
-    const _s = utils.bufferToHex(signed.s);
+    const _r = bufferToHex(signed.r);
+    const _s = bufferToHex(signed.s);
     const _v = signed.v;
     
     // Approval
@@ -115,13 +125,13 @@ contract("LocalCoinSwapV2", async accounts => {
       const _tradeID = crypto[0];
       await initialiseTrade(_tradeID, crypto[1]);
 
-      const relayedSenderParams = abi.soliditySHA3(
+      const relayedSenderParams = soliditySHA3(
         ["bytes16", "uint8", "uint128"],
         [_tradeID, 0x01, MAX_UINT128]);
-      const prefixedHash = utils.hashPersonalMessage(relayedSenderParams);
-      const signed = utils.ecsign(prefixedHash, utils.toBuffer(_sellerPriv));
-      const _r = utils.bufferToHex(signed.r);
-      const _s = utils.bufferToHex(signed.s);
+      const prefixedHash = hashPersonalMessage(relayedSenderParams);
+      const signed = ecsign(prefixedHash, toBuffer(_sellerPriv));
+      const _r = bufferToHex(signed.r);
+      const _s = bufferToHex(signed.s);
       const _v = signed.v;
 
       const tx = await fiatOnRamp.relay(
@@ -152,13 +162,13 @@ contract("LocalCoinSwapV2", async accounts => {
       const _tradeID = crypto[0];
       await initialiseTrade(_tradeID, crypto[1]);
 
-      const relayedSenderParams = abi.soliditySHA3(
+      const relayedSenderParams = soliditySHA3(
         ["bytes16", "uint8", "uint128"],
         [_tradeID, 0x02, MAX_UINT128]);
-      const prefixedHash = utils.hashPersonalMessage(relayedSenderParams);
-      const signed = utils.ecsign(prefixedHash, utils.toBuffer(_buyerPriv));
-      const _r = utils.bufferToHex(signed.r);
-      const _s = utils.bufferToHex(signed.s);
+      const prefixedHash = hashPersonalMessage(relayedSenderParams);
+      const signed = ecsign(prefixedHash, toBuffer(_buyerPriv));
+      const _r = bufferToHex(signed.r);
+      const _s = bufferToHex(signed.s);
       const _v = signed.v;
 
       // We expect the buyer wallet to remain the same and the seller to
@@ -199,13 +209,13 @@ contract("LocalCoinSwapV2", async accounts => {
 
       const _buyerPercent = 0
 
-      const relayedSenderParams = abi.soliditySHA3(
+      const relayedSenderParams = soliditySHA3(
         ["bytes16", "uint8"],
         [_tradeID, 0x03]);
-      const prefixedHash = utils.hashPersonalMessage(relayedSenderParams);
-      const signed = utils.ecsign(prefixedHash, utils.toBuffer(_buyerPriv));
-      const _r = utils.bufferToHex(signed.r);
-      const _s = utils.bufferToHex(signed.s);
+      const prefixedHash = hashPersonalMessage(relayedSenderParams);
+      const signed = ecsign(prefixedHash, toBuffer(_buyerPriv));
+      const _r = bufferToHex(signed.r);
+      const _s = bufferToHex(signed.s);
       const _v = signed.v;
 
       // We expect the buyer wallet to remain the same and the seller to
@@ -244,13 +254,13 @@ contract("LocalCoinSwapV2", async accounts => {
 
       const _buyerPercent = 100
 
-      const relayedSenderParams = abi.soliditySHA3(
+      const relayedSenderParams = soliditySHA3(
         ["bytes16", "uint8"],
         [_tradeID, 0x03]);
-      const prefixedHash = utils.hashPersonalMessage(relayedSenderParams);
-      const signed = utils.ecsign(prefixedHash, utils.toBuffer(_buyerPriv));
-      const _r = utils.bufferToHex(signed.r);
-      const _s = utils.bufferToHex(signed.s);
+      const prefixedHash = hashPersonalMessage(relayedSenderParams);
+      const signed = ecsign(prefixedHash, toBuffer(_buyerPriv));
+      const _r = bufferToHex(signed.r);
+      const _s = bufferToHex(signed.s);
       const _v = signed.v;
 
       // We expect the buyer wallet to remain the same and the seller to

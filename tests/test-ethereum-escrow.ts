@@ -7,6 +7,7 @@ import {
 } from 'ethereumjs-util';
 import { ethers, artifacts, web3 } from "hardhat";
 import { assert } from "chai";
+import { describe } from "mocha";
 const EscrowContract = artifacts.require("LocalCoinSwapEthereumEscrow");
 
 
